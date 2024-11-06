@@ -844,21 +844,22 @@ namespace extension {
                                         remote->recent_packets[++remote->recent_packets_index] = packet.packet_id;
                                     }
 
+                                    std::cout << "Packet " << packet.packet_id << " completed" << std::endl;
+
                                     // We have completed this packet, discard the data
                                     assemblers.erase(assemblers.find(packet.packet_id));
-                                    std::cout << "Packet " << packet.packet_id << " completed" << std::endl;
                                 }
 
                                 // Check for any timed out packets
                                 for (auto it = assemblers.begin(); it != assemblers.end();) {
                                     const auto now          = std::chrono::steady_clock::now();
+                                    const auto timeout      = std::chrono::seconds(1);
                                     const auto& packet_time = it->second.first;
-                                    const auto timeout      = packet_time + std::chrono::seconds(2);
 
                                     // it = now > timeout ? assemblers.erase(it) : std::next(it);
 
-                                    if (now > timeout) {
-                                        std::cout << "Packet " << it->first << " timed out" << std::endl;
+                                    if (now > packet_time + timeout) {
+                                        std::cout << "Packet " << it->first << " dropped (time out)" << std::endl;
                                         it = assemblers.erase(it);
                                     }
                                     else {
