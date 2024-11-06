@@ -849,13 +849,20 @@ namespace extension {
                                     std::cout << "Packet " << packet.packet_id << " completed" << std::endl;
                                 }
 
-                                for (auto [packet_id, assembler] : assemblers) {
+                                // Check for any timed out packets
+                                for (auto it = assemblers.begin(); it != assemblers.end();) {
                                     const auto now          = std::chrono::steady_clock::now();
-                                    const auto& packet_time = assembler.first;
+                                    const auto& packet_time = it->second.first;
                                     const auto timeout      = packet_time + std::chrono::seconds(2);
+
+                                    // it = now > timeout ? assemblers.erase(it) : std::next(it);
+
                                     if (now > timeout) {
-                                        std::cout << "Packet " << packet_id << " timed out" << std::endl;
-                                        assemblers.erase(assemblers.find(packet_id));
+                                        std::cout << "Packet " << it->first << " timed out" << std::endl;
+                                        it = assemblers.erase(it);
+                                    }
+                                    else {
+                                        ++it;
                                     }
                                 }
                             }
