@@ -844,8 +844,6 @@ namespace extension {
                                         remote->recent_packets[++remote->recent_packets_index] = packet.packet_id;
                                     }
 
-                                    // std::cout << "Packet " << packet.packet_id << " completed" << std::endl;
-
                                     // We have completed this packet, discard the data
                                     assemblers.erase(assemblers.find(packet.packet_id));
                                 }
@@ -856,15 +854,7 @@ namespace extension {
                                     const auto timeout      = std::chrono::seconds(1);
                                     const auto& packet_time = it->second.first;
 
-                                    // it = now > packet_time + timeout ? assemblers.erase(it) : std::next(it);
-
-                                    if (now > packet_time + timeout) {
-                                        // std::cout << "Packet " << it->first << " dropped (time out)" << std::endl;
-                                        it = assemblers.erase(it);
-                                    }
-                                    else {
-                                        ++it;
-                                    }
+                                    it = now > packet_time + timeout ? assemblers.erase(it) : std::next(it);
                                 }
                             }
                         }
