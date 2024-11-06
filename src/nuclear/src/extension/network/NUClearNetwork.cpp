@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <cstring>
+#include <iostream>
 #include <set>
 #include <stdexcept>
 #include <system_error>
@@ -512,7 +513,9 @@ namespace extension {
                         ++it;
                     }
                     // Remove them from the list
-                    else { it = qit->second.targets.erase(it); }
+                    else {
+                        it = qit->second.targets.erase(it);
+                    }
                 }
 
                 if (qit->second.targets.empty()) {
@@ -608,7 +611,9 @@ namespace extension {
                             }
                         }
                         // They're old but at least they're not timing out
-                        else { remote->last_update = std::chrono::steady_clock::now(); }
+                        else {
+                            remote->last_update = std::chrono::steady_clock::now();
+                        }
                     } break;
                     case LEAVE: {
 
@@ -841,6 +846,17 @@ namespace extension {
 
                                     // We have completed this packet, discard the data
                                     assemblers.erase(assemblers.find(packet.packet_id));
+                                    std::cout << "Packet " << packet.packet_id << " completed" << std::endl;
+                                }
+
+                                for (auto [packet_id, assembler] : assemblers) {
+                                    const auto now          = std::chrono::steady_clock::now();
+                                    const auto& packet_time = assembler.first;
+                                    const auto timeout      = packet_time + std::chrono::seconds(2);
+                                    if (now > timeout) {
+                                        std::cout << "Packet " << packet_id << " timed out" << std::endl;
+                                        assemblers.erase(assemblers.find(packet_id));
+                                    }
                                 }
                             }
                         }
