@@ -848,10 +848,11 @@ namespace extension {
                                     assemblers.erase(assemblers.find(packet.packet_id));
                                 }
 
-                                // Check for any timed out packets
+
+                                // Check for and delete any timed out packets
                                 for (auto it = assemblers.begin(); it != assemblers.end();) {
                                     const auto now          = std::chrono::steady_clock::now();
-                                    const auto timeout      = std::chrono::seconds(1);
+                                    const auto timeout      = remote->round_trip_time * 2.0;
                                     const auto& packet_time = it->second.first;
 
                                     it = now > packet_time + timeout ? assemblers.erase(it) : std::next(it);
