@@ -89,30 +89,31 @@ namespace extension {
                 /// A little kalman filter for estimating round trip time
                 RoundTripKF round_trip_kf{};
 
-                std::chrono::steady_clock::duration round_trip_time{std::chrono::seconds(1)};
+                std::chrono::steady_clock::duration round_trip_time{std::chrono::seconds(2)};
 
                 void measure_round_trip(std::chrono::steady_clock::duration time) {
+                    round_trip_time = std::chrono::seconds(2);
 
                     // Make our measurement into a float seconds type
-                    const std::chrono::duration<float> m =
-                        std::chrono::duration_cast<std::chrono::duration<float>>(time);
+                    // const std::chrono::duration<float> m =
+                    //     std::chrono::duration_cast<std::chrono::duration<float>>(time);
 
-                    // Alias variables
-                    const auto& Q = round_trip_kf.process_noise;
-                    const auto& R = round_trip_kf.measurement_noise;
-                    auto& P       = round_trip_kf.variance;
-                    auto& X       = round_trip_kf.mean;
+                    // // Alias variables
+                    // const auto& Q = round_trip_kf.process_noise;
+                    // const auto& R = round_trip_kf.measurement_noise;
+                    // auto& P       = round_trip_kf.variance;
+                    // auto& X       = round_trip_kf.mean;
 
-                    // Calculate our kalman gain
-                    const float K = (P + Q) / (P + Q + R);
+                    // // Calculate our kalman gain
+                    // const float K = (P + Q) / (P + Q + R);
 
-                    // Do filter
-                    P = R * (P + Q) / (R + P + Q);
-                    X = X + (m.count() - X) * K;
+                    // // Do filter
+                    // P = R * (P + Q) / (R + P + Q);
+                    // X = X + (m.count() - X) * K;
 
-                    // Put result into our variable
-                    round_trip_time = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
-                        std::chrono::duration<float>(X));
+                    // // Put result into our variable
+                    // round_trip_time = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+                    //     std::chrono::duration<float>(X));
                 }
             };
 
