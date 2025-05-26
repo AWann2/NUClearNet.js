@@ -127,7 +127,9 @@ class NUClearNet extends EventEmitter {
         try {
           this._net.process();
         } catch (err) {
-          this.disconnect();
+          if (this._active) {
+            this.disconnect();
+          }
         }
       }
 
