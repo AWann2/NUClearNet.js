@@ -124,7 +124,11 @@ class NUClearNet extends EventEmitter {
 
       // Only process if we're active
       if (this._active) {
-        this._net.process();
+        try {
+          this._net.process();
+        } catch (err) {
+          this.disconnect();
+        }
       }
 
       // Sometimes due to weird timing artifacts we run out of these
@@ -165,6 +169,8 @@ class NUClearNet extends EventEmitter {
 
     this._active = false;
     this._net.shutdown();
+
+    this.emit('disconnect');
   }
 
   send(options) {
