@@ -127,10 +127,12 @@ class NUClearNet extends EventEmitter {
         try {
           this._net.process();
         } catch (err) {
-          // An error occurred during processing, disconnect.
-          // Check if active again, since process happens asynchronously.
-          if (this._active) {
-            this.disconnect();
+          if (err instanceof Error) {
+            // An error occurred during processing, disconnect.
+            // Check if active again, since process happens asynchronously.
+            if (this._active) {
+              this.disconnect();
+            }
           }
         }
       }
