@@ -127,6 +127,8 @@ class NUClearNet extends EventEmitter {
         try {
           this._net.process();
         } catch (err) {
+          // An error occurred during processing, disconnect.
+          // Check if active again, since process happens asynchronously.
           if (this._active) {
             this.disconnect();
           }
@@ -159,11 +161,13 @@ class NUClearNet extends EventEmitter {
     const mtu = options.mtu === undefined ? 1500 : options.mtu;
 
     // Connect to the network
-    this._active = true;
     this._net.reset(name, address, port, mtu);
 
     // Run our first "process" to kick things off
     this._net.process();
+
+    // If the first process is successful we are active
+    this._active = true;
   }
 
   disconnect() {
