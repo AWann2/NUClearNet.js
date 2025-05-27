@@ -44,6 +44,7 @@ class NUClearNet extends EventEmitter {
         event !== 'nuclear_packet' &&
         event !== 'newListener' &&
         event !== 'removeListener' &&
+        event !== 'disconnect' &&
         this.listenerCount(event) === 0
       ) {
         const hash = this._net.hash(event);
@@ -60,6 +61,7 @@ class NUClearNet extends EventEmitter {
         event !== 'nuclear_packet' &&
         event !== 'newListener' &&
         event !== 'removeListener' &&
+        event !== 'disconnect' &&
         this.listenerCount(event) === 0
       ) {
         // Get our hash and delete it
