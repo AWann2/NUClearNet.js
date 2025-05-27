@@ -130,7 +130,9 @@ class NUClearNet extends EventEmitter {
           this._net.process();
         } catch {
           // An error occurred during processing, disconnect.
-          // Check if active again, since process happens asynchronously.
+          // This needs to check again if this is still active, as multiple
+          // `_onWait` calls run concurrently, and only the first one to fail
+          // should disconnect.
           if (this._active) {
             this.disconnect();
           }
